@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -61,6 +62,20 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(
                 HttpStatus.BAD_REQUEST,
                 "Invalid request",
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleNoResourceFoundException(
+            NoResourceFoundException ex, WebRequest request) {
+        // Don't log favicon requests to reduce log spam
+        if (!ex.getMessage().contains("favicon.ico")) {
+            log.warn("Static resource not found: {}", ex.getMessage());
+        }
+        return buildErrorResponse(
+                HttpStatus.NOT_FOUND,
+                "Resource not found",
                 ex.getMessage()
         );
     }
