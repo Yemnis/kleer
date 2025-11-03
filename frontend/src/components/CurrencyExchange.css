@@ -1,0 +1,268 @@
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #1e293b;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: fadeIn 0.5s ease;
+  border: 1px solid #334155;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.subtitle {
+  opacity: 0.95;
+  font-size: 1rem;
+}
+
+.exchange-form {
+  padding: 30px;
+}
+
+.input-group {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input[type='number'] {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.5rem;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-family: inherit;
+  background: #0f172a;
+}
+
+input[type='number']:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.currency-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.currency-select-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.currency-select {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #e2e8f0;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  appearance: none;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.currency-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.select-wrapper::after {
+  content: '▼';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.swap-button {
+  background: #0f172a;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #94a3b8;
+  margin-bottom: 0;
+}
+
+.swap-button:hover {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  transform: rotate(180deg);
+}
+
+.result {
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 1px solid #334155;
+}
+
+.result-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #60a5fa;
+  margin-bottom: 8px;
+}
+
+.exchange-rate {
+  font-size: 1rem;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.last-updated {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.refresh-button {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: #94a3b8;
+  font-family: inherit;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refresh-button svg.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-message {
+  margin-top: 16px;
+  padding: 12px;
+  background: #7f1d1d;
+  border: 1px solid #dc2626;
+  border-radius: 8px;
+  color: #fecaca;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.info-box {
+  background: #0f172a;
+  border-left: 4px solid #3b82f6;
+  padding: 16px;
+  margin: 20px 30px 30px 30px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.info-box p {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .currency-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .swap-button {
+    transform: rotate(90deg);
+    margin: 0 auto;
+  }
+
+  .swap-button:hover {
+    transform: rotate(270deg);
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .result-amount {
+    font-size: 2rem;
+  }
+}
+
