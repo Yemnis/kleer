@@ -2,6 +2,7 @@ package com.kleer.currency.service;
 
 import com.kleer.currency.dto.riksbank.RiksbankObservation;
 import com.kleer.currency.exception.RiksbankApiException;
+import com.kleer.currency.util.ExchangeRateCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +30,16 @@ class RiksbankServiceTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private ExchangeRateCalculator rateCalculator;
+
     private RiksbankService riksbankService;
 
     private static final String RIKSBANK_BASE_URL = "https://api.riksbank.se/swea/v1";
 
     @BeforeEach
     void setUp() {
-        riksbankService = new RiksbankService(restTemplate, RIKSBANK_BASE_URL);
+        riksbankService = new RiksbankService(restTemplate, RIKSBANK_BASE_URL, rateCalculator);
     }
 
     @Test
@@ -61,6 +66,17 @@ class RiksbankServiceTest {
                 any(ParameterizedTypeReference.class)
         )).thenReturn(new ResponseEntity<>(List.of(sekUsdObs), HttpStatus.OK));
 
+        Map<String, BigDecimal> expectedRates = new HashMap<>();
+        expectedRates.put("EUR/SEK", new BigDecimal("0.0915"));
+        expectedRates.put("SEK/EUR", new BigDecimal("10.92896175"));
+        expectedRates.put("USD/SEK", new BigDecimal("0.0962"));
+        expectedRates.put("SEK/USD", new BigDecimal("10.39501039"));
+        expectedRates.put("EUR/USD", new BigDecimal("1.05131421"));
+        expectedRates.put("USD/EUR", new BigDecimal("0.95119454"));
+
+        when(rateCalculator.calculateAllRates(any(BigDecimal.class), any(BigDecimal.class)))
+                .thenReturn(expectedRates);
+
         Map<String, BigDecimal> rates = riksbankService.fetchLatestRates();
 
         assertNotNull(rates);
@@ -72,8 +88,10 @@ class RiksbankServiceTest {
         assertTrue(rates.containsKey("EUR/USD"));
         assertTrue(rates.containsKey("USD/EUR"));
 
-        assertEquals(new BigDecimal("0.0915"), rates.get("SEK/EUR"));
-        assertEquals(new BigDecimal("0.0962"), rates.get("SEK/USD"));
+        verify(rateCalculator).calculateAllRates(
+                eq(new BigDecimal("0.0915")),
+                eq(new BigDecimal("0.0962"))
+        );
     }
 
     @Test
@@ -84,6 +102,9 @@ class RiksbankServiceTest {
                 isNull(),
                 any(ParameterizedTypeReference.class)
         )).thenThrow(new RestClientException("API Error"));
+
+        when(rateCalculator.calculateAllRates(isNull(), isNull()))
+                .thenReturn(new HashMap<>());
 
         assertThrows(RiksbankApiException.class, () -> riksbankService.fetchLatestRates());
     }
