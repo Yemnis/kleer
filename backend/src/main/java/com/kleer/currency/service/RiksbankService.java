@@ -49,20 +49,25 @@ public class RiksbankService {
 
         Map<String, BigDecimal> rates = new HashMap<>();
 
-        BigDecimal sekToEur = fetchCurrencyRate("SEKEUR", fromDate, toDate);
-        if (sekToEur != null) {
-            rates.put("SEK/EUR", sekToEur);
-            rates.put("EUR/SEK", BigDecimal.ONE.divide(sekToEur, 8, RoundingMode.HALF_UP));
+        // NOTE: Riksbank SEKEURPMI returns EUR/SEK (how many SEK per EUR), not SEK/EUR
+        // So we need to invert it to get SEK/EUR (how many EUR per SEK)
+        BigDecimal eurToSek = fetchCurrencyRate("SEKEUR", fromDate, toDate);
+        if (eurToSek != null) {
+            rates.put("EUR/SEK", eurToSek);
+            rates.put("SEK/EUR", BigDecimal.ONE.divide(eurToSek, 8, RoundingMode.HALF_UP));
         }
 
-        BigDecimal sekToUsd = fetchCurrencyRate("SEKUSD", fromDate, toDate);
-        if (sekToUsd != null) {
-            rates.put("SEK/USD", sekToUsd);
-            rates.put("USD/SEK", BigDecimal.ONE.divide(sekToUsd, 8, RoundingMode.HALF_UP));
+        // NOTE: Riksbank SEKUSDPMI returns USD/SEK (how many SEK per USD), not SEK/USD
+        // So we need to invert it to get SEK/USD (how many USD per SEK)
+        BigDecimal usdToSek = fetchCurrencyRate("SEKUSD", fromDate, toDate);
+        if (usdToSek != null) {
+            rates.put("USD/SEK", usdToSek);
+            rates.put("SEK/USD", BigDecimal.ONE.divide(usdToSek, 8, RoundingMode.HALF_UP));
         }
 
-        if (sekToEur != null && sekToUsd != null) {
-            BigDecimal eurToUsd = sekToUsd.divide(sekToEur, 8, RoundingMode.HALF_UP);
+        if (eurToSek != null && usdToSek != null) {
+            // Calculate EUR/USD by dividing USD/SEK by EUR/SEK
+            BigDecimal eurToUsd = usdToSek.divide(eurToSek, 8, RoundingMode.HALF_UP);
             rates.put("EUR/USD", eurToUsd);
             rates.put("USD/EUR", BigDecimal.ONE.divide(eurToUsd, 8, RoundingMode.HALF_UP));
         }
