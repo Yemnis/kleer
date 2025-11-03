@@ -29,12 +29,17 @@ export const CurrencyExchange = () => {
   }, [amount, fromCurrency, toCurrency]);
 
   const loadInitialData = async () => {
+    setLoading(true);
     try {
-      const rates = await ApiService.getLatestRates();
+      // Fetch fresh rates from Riksbank on initial load
+      const rates = await ApiService.refreshRates();
       setLastUpdated(rates.lastUpdated);
+      setError('');
     } catch (err) {
       setError('Kunde inte hämta växelkurser. Kontrollera att backend är igång.');
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
