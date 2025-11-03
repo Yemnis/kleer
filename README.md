@@ -118,5 +118,5 @@ npm run preview
 
 ## License
 
-This project is part of the Kleer application suite.
+None. This project is part of the Kleer application process for dev role.
 
